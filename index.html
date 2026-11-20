@@ -1,26 +1,53 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EgeCraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:system-ui,sans-serif;color:#fff;text-align:center;padding:20px;background:linear-gradient(#4a90d9 0%,#87ceeb 55%,#3a8f2e 55%,#5b3a1a 100%)}
-h1{font-size:52px;margin:0 0 10px;text-shadow:4px 4px #0006;letter-spacing:2px}
-.btn{width:260px;padding:14px;font-size:20px;font-weight:700;color:#fff;background:#6b6b6b;border:3px solid #000;border-radius:6px;box-shadow:inset 0 -5px #444,inset 0 5px #9a9a9a;cursor:pointer}
-.btn:active{background:#4f8f3a}
-#panel{display:none;background:#000a;border-radius:10px;padding:16px;max-width:300px;font-size:16px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Press Start 2P','Courier New',monospace;color:#fff}
+body{position:relative;background:linear-gradient(#2a6fc9 0%,#5da7ec 45%,#bfe3fb 75%)}
+.sun{position:absolute;top:9%;right:14%;width:70px;height:70px;background:#fff7b0;box-shadow:0 0 0 10px #fff7b055,0 0 60px 30px #fff3a066}
+.cloud{position:absolute;width:130px;height:30px;background:#fff;opacity:.92;animation:drift linear infinite}
+.cloud:before{content:"";position:absolute;left:25px;top:-22px;width:60px;height:26px;background:#fff}
+.c1{top:14%;animation-duration:90s;left:-160px}
+.c2{top:26%;animation-duration:130s;left:-160px;animation-delay:-60s;transform:scale(.7)}
+.c3{top:8%;animation-duration:110s;left:-160px;animation-delay:-30s;transform:scale(1.2)}
+@keyframes drift{to{margin-left:calc(100vw + 340px)}}
+svg.hills{position:absolute;left:0;bottom:16vh;width:100%;height:34vh}
+.ground{position:absolute;left:0;right:0;bottom:0;height:20vh;background:
+linear-gradient(90deg,#0000 0 50%,#0000001a 50%) 0 0/36px 36px,
+linear-gradient(#0000 0 50%,#00000014 50%) 0 0/36px 36px,#7a5230;border-top:22px solid #4f9a2f;box-shadow:inset 0 6px #6fc045}
+.vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,#0000 55%,#0000008c 100%);pointer-events:none}
+.content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;text-align:center}
+h1{margin:0 0 6px;font-size:clamp(30px,10vw,72px);font-weight:400;line-height:1.1;color:#e4e4e4;
+text-shadow:1px 1px #666,2px 2px #666,3px 3px #5a5a5a,4px 4px #555,5px 5px #4a4a4a,6px 6px #444,9px 9px 10px #0009}
+h1 span{color:#8be04e;text-shadow:1px 1px #3f7d22,2px 2px #3f7d22,3px 3px #36701c,4px 4px #2f6318,5px 5px #285713,6px 6px #214c10,9px 9px 10px #0009}
+.splash{color:#ffee33;font-size:clamp(10px,3vw,14px);text-shadow:2px 2px #3f3f00;transform:rotate(-6deg);margin:-4px 0 14px;animation:pulse 1s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:rotate(-6deg) scale(1.12)}}
+.btn{width:min(340px,82vw);padding:16px 10px;font-size:15px;background:#8b8b8b;border:3px solid #000;
+box-shadow:inset -5px -5px #555,inset 5px 5px #c8c8c8;text-shadow:2px 2px #3a3a3a;pointer-events:none}
+.ver{position:absolute;left:12px;bottom:10px;font-size:9px;text-shadow:1px 1px #000;opacity:.85}
 </style>
 </head>
 <body>
-<h1>🌍 EgeCraft</h1>
-<button class="btn" onclick="goster('Oyun çok yakında geliyor! 🚧')">Oyna</button>
-<button class="btn" onclick="goster('Ayarlar çok yakında!')">Ayarlar</button>
-<button class="btn" onclick="goster('EgeCraft — blok dünyası oyunu. Hazırlanıyor.')">Hakkında</button>
-<div id="panel"></div>
-<script>
-function goster(t){var p=document.getElementById('panel');p.textContent=t;p.style.display='block'}
-</script>
+<div class="sun"></div>
+<div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+<svg class="hills" viewBox="0 0 1200 300" preserveAspectRatio="none">
+<path fill="#4d7f9a" d="M0 300V170h100v-30h100v-40h100v30h100v-60h100v40h100v-20h100v50h100v-40h100v30h100v-30h100v70H0z"/>
+<path fill="#3d7a3a" d="M0 300V220h80v-30h120v20h100v-40h100v30h140v-30h100v40h120v-20h100v30h140v-30h100v60z"/>
+</svg>
+<div class="ground"></div>
+<div class="vig"></div>
+<div class="content">
+<h1>EGE<span>CRAFT</span></h1>
+<div class="splash">Yakında!</div>
+<div class="btn">Oyna</div>
+<div class="btn">Ayarlar</div>
+<div class="btn">Hakkında</div>
+</div>
+<div class="ver">EgeCraft v0.1</div>
 </body>
 </html>
