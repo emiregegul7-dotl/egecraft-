@@ -2,52 +2,191 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>EgeCraft</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-html,body{margin:0;height:100%;overflow:hidden;font-family:'Press Start 2P','Courier New',monospace;color:#fff}
-body{position:relative;background:linear-gradient(#2a6fc9 0%,#5da7ec 45%,#bfe3fb 75%)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:none}
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Press Start 2P','Courier New',monospace;color:#fff;background:#87ceeb}
+canvas{display:block}
+#menu{position:fixed;inset:0;z-index:9;background:linear-gradient(#2a6fc9 0%,#5da7ec 45%,#bfe3fb 75%);overflow:hidden}
 .sun{position:absolute;top:9%;right:14%;width:70px;height:70px;background:#fff7b0;box-shadow:0 0 0 10px #fff7b055,0 0 60px 30px #fff3a066}
-.cloud{position:absolute;width:130px;height:30px;background:#fff;opacity:.92;animation:drift linear infinite}
+.cloud{position:absolute;width:130px;height:30px;background:#fff;opacity:.92;animation:drift linear infinite;left:-160px}
 .cloud:before{content:"";position:absolute;left:25px;top:-22px;width:60px;height:26px;background:#fff}
-.c1{top:14%;animation-duration:90s;left:-160px}
-.c2{top:26%;animation-duration:130s;left:-160px;animation-delay:-60s;transform:scale(.7)}
-.c3{top:8%;animation-duration:110s;left:-160px;animation-delay:-30s;transform:scale(1.2)}
+.c1{top:14%;animation-duration:90s}.c2{top:26%;animation-duration:130s;animation-delay:-60s}.c3{top:8%;animation-duration:110s;animation-delay:-30s}
 @keyframes drift{to{margin-left:calc(100vw + 340px)}}
 svg.hills{position:absolute;left:0;bottom:16vh;width:100%;height:34vh}
-.ground{position:absolute;left:0;right:0;bottom:0;height:20vh;background:
-linear-gradient(90deg,#0000 0 50%,#0000001a 50%) 0 0/36px 36px,
-linear-gradient(#0000 0 50%,#00000014 50%) 0 0/36px 36px,#7a5230;border-top:22px solid #4f9a2f;box-shadow:inset 0 6px #6fc045}
+.ground{position:absolute;left:0;right:0;bottom:0;height:20vh;background:linear-gradient(90deg,#0000 0 50%,#0000001a 50%) 0 0/36px 36px,linear-gradient(#0000 0 50%,#00000014 50%) 0 0/36px 36px,#7a5230;border-top:22px solid #4f9a2f;box-shadow:inset 0 6px #6fc045}
 .vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,#0000 55%,#0000008c 100%);pointer-events:none}
 .content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;text-align:center}
-h1{margin:0 0 6px;font-size:clamp(30px,10vw,72px);font-weight:400;line-height:1.1;color:#e4e4e4;
-text-shadow:1px 1px #666,2px 2px #666,3px 3px #5a5a5a,4px 4px #555,5px 5px #4a4a4a,6px 6px #444,9px 9px 10px #0009}
+h1{margin:0 0 6px;font-size:clamp(30px,10vw,72px);font-weight:400;line-height:1.1;color:#e4e4e4;text-shadow:1px 1px #666,2px 2px #666,3px 3px #5a5a5a,4px 4px #555,5px 5px #4a4a4a,6px 6px #444,9px 9px 10px #0009}
 h1 span{color:#8be04e;text-shadow:1px 1px #3f7d22,2px 2px #3f7d22,3px 3px #36701c,4px 4px #2f6318,5px 5px #285713,6px 6px #214c10,9px 9px 10px #0009}
 .splash{color:#ffee33;font-size:clamp(10px,3vw,14px);text-shadow:2px 2px #3f3f00;transform:rotate(-6deg);margin:-4px 0 14px;animation:pulse 1s ease-in-out infinite alternate}
 @keyframes pulse{to{transform:rotate(-6deg) scale(1.12)}}
-.btn{width:min(340px,82vw);padding:16px 10px;font-size:15px;background:#8b8b8b;border:3px solid #000;
-box-shadow:inset -5px -5px #555,inset 5px 5px #c8c8c8;text-shadow:2px 2px #3a3a3a;pointer-events:none}
+.btn{width:min(340px,82vw);padding:16px 10px;font-size:15px;background:#8b8b8b;border:3px solid #000;box-shadow:inset -5px -5px #555,inset 5px 5px #c8c8c8;text-shadow:2px 2px #3a3a3a;pointer-events:none}
+#play{pointer-events:auto;cursor:pointer}
+#play:active{background:#5a9a3a}
 .ver{position:absolute;left:12px;bottom:10px;font-size:9px;text-shadow:1px 1px #000;opacity:.85}
+#hud{position:fixed;top:8px;left:8px;font-size:9px;line-height:1.6;background:#0007;padding:8px 10px;border-radius:6px;z-index:5;display:none}
+#cross{position:fixed;left:50%;top:50%;width:18px;height:18px;margin:-9px;z-index:4;pointer-events:none;display:none}
+#cross:before,#cross:after{content:"";position:absolute;background:#fff;mix-blend-mode:difference}
+#cross:before{left:8px;top:0;width:2px;height:18px}#cross:after{top:8px;left:0;height:2px;width:18px}
+#bar{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:none;gap:4px;z-index:5}
+.sl{width:44px;height:44px;border:3px solid #fff8;border-radius:4px}.sl.on{border-color:#fff;transform:scale(1.12)}
+#touch{display:none}
+#stick{position:fixed;left:30px;bottom:80px;width:110px;height:110px;border-radius:50%;background:#fff3;z-index:5}
+#knob{position:absolute;left:35px;top:35px;width:40px;height:40px;border-radius:50%;background:#fff8}
+.tb{position:fixed;z-index:5;width:60px;height:60px;border-radius:50%;border:0;background:#0006;color:#fff;font-size:24px;padding:0}
 </style>
 </head>
 <body>
+
+<div id="menu">
 <div class="sun"></div>
 <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
 <svg class="hills" viewBox="0 0 1200 300" preserveAspectRatio="none">
 <path fill="#4d7f9a" d="M0 300V170h100v-30h100v-40h100v30h100v-60h100v40h100v-20h100v50h100v-40h100v30h100v-30h100v70H0z"/>
 <path fill="#3d7a3a" d="M0 300V220h80v-30h120v20h100v-40h100v30h140v-30h100v40h120v-20h100v30h140v-30h100v60z"/>
 </svg>
-<div class="ground"></div>
-<div class="vig"></div>
+<div class="ground"></div><div class="vig"></div>
 <div class="content">
 <h1>EGE<span>CRAFT</span></h1>
-<div class="splash">Yakında!</div>
-<div class="btn">Oyna</div>
+<div class="splash">Hazır!</div>
+<div class="btn" id="play">Oyna</div>
 <div class="btn">Ayarlar</div>
 <div class="btn">Hakkında</div>
 </div>
-<div class="ver">EgeCraft v0.1</div>
+<div class="ver">EgeCraft v0.2</div>
+</div>
+
+<div id="hud">WASD: yürü • Boşluk: zıpla<br>Sol tık: kır • Sağ tık: koy<br>1-6: blok • V: kamera</div>
+<div id="cross"></div><div id="bar"></div>
+<div id="touch">
+<div id="stick"><div id="knob"></div></div>
+<button class="tb" id="bJ" style="right:20px;bottom:150px">⬆</button>
+<button class="tb" id="bB" style="right:90px;bottom:90px">⛏</button>
+<button class="tb" id="bP" style="right:20px;bottom:80px">🧱</button>
+<button class="tb" id="bV" style="right:20px;top:20px;width:48px;height:48px;font-size:18px">👁</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=i=>document.getElementById(i);
+const W=64,H=32,seed=7;
+const COL=[null,[.33,.66,.22],[.5,.35,.2],[.5,.5,.52],[.4,.27,.12],[.15,.5,.15],[.85,.8,.5]];
+let world,mesh,dirty=false,ready=false;
+const rnd=n=>{const s=Math.sin(n*127.1+seed*311.7)*43758.5453;return s-Math.floor(s)};
+const h2=(a,b)=>rnd(a*57+b*131);
+function noise(x,z){const xi=Math.floor(x),zi=Math.floor(z),xf=x-xi,zf=z-zi,u=xf*xf*(3-2*xf),v=zf*zf*(3-2*zf);
+return (h2(xi,zi)*(1-u)+h2(xi+1,zi)*u)*(1-v)+(h2(xi,zi+1)*(1-u)+h2(xi+1,zi+1)*u)*v}
+const get=(x,y,z)=>y<0?3:(x<0||z<0||x>=W||z>=W)?3:y>=H?0:world[x+z*W+y*W*W];
+function set(x,y,z,b){if(x>=0&&z>=0&&x<W&&z<W&&y>=0&&y<H)world[x+z*W+y*W*W]=b}
+function gen(){world=new Uint8Array(W*W*H);
+for(let x=0;x<W;x++)for(let z=0;z<W;z++){const h=Math.floor(8+noise(x/20,z/20)*10+noise(x/7,z/7)*3);
+for(let y=0;y<=h;y++)set(x,y,z,y==h?(h<=9?6:1):y>h-4?2:3);
+if(h>9&&x>3&&z>3&&x<W-4&&z<W-4&&rnd(x*31+z*17)>.985){
+for(let t=1;t<=4;t++)set(x,h+t,z,4);
+for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++)for(let dy=3;dy<=5;dy++)if(!get(x+dx,h+dy,z+dz)&&Math.abs(dx)+Math.abs(dz)<4)set(x+dx,h+dy,z+dz,5)}}}
+const D=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+const Q=[[[1,0,0],[1,1,0],[1,1,1],[1,0,1]],[[0,0,1],[0,1,1],[0,1,0],[0,0,0]],[[0,1,0],[0,1,1],[1,1,1],[1,1,0]],[[0,0,1],[0,0,0],[1,0,0],[1,0,1]],[[1,0,1],[1,1,1],[0,1,1],[0,0,1]],[[0,0,0],[0,1,0],[1,1,0],[1,0,0]]];
+const SH=[.8,.8,1,.5,.7,.7];
+function build(){const P=[],C=[],I=[];
+for(let y=0;y<H;y++)for(let z=0;z<W;z++)for(let x=0;x<W;x++){const b=world[x+z*W+y*W*W];if(!b)continue;
+for(let f=0;f<6;f++){const d=D[f];if(get(x+d[0],y+d[1],z+d[2]))continue;
+const c=COL[b==1&&f!=2?2:b],s=SH[f]*(.9+rnd(x*7+y*13+z*29)*.2),n=P.length/3;
+Q[f].forEach(q=>{P.push(x+q[0],y+q[1],z+q[2]);C.push(c[0]*s,c[1]*s,c[2]*s)});
+I.push(n,n+1,n+2,n,n+2,n+3)}}
+const g=new THREE.BufferGeometry();
+g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
+g.setAttribute('color',new THREE.Float32BufferAttribute(C,3));g.setIndex(I);
+if(mesh){mesh.geometry.dispose();mesh.geometry=g}
+else{mesh=new THREE.Mesh(g,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide}));scene.add(mesh)}}
+
+// sahne
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x87ceeb);scene.fog=new THREE.Fog(0x87ceeb,25,70);
+const cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,200);cam.rotation.order='YXZ';
+const ren=new THREE.WebGLRenderer({antialias:true});ren.setSize(innerWidth,innerHeight);ren.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.prepend(ren.domElement);
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+const sel=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.01,1.01,1.01)),new THREE.LineBasicMaterial({color:0}));sel.visible=false;scene.add(sel);
+const me=new THREE.Group();
+(()=>{const b=new THREE.Mesh(new THREE.BoxGeometry(.6,.9,.3),new THREE.MeshBasicMaterial({color:0xe53935}));b.position.y=.75;
+const h=new THREE.Mesh(new THREE.BoxGeometry(.5,.5,.5),new THREE.MeshBasicMaterial({color:0xf1c27d}));h.position.y=1.45;
+const l=new THREE.Mesh(new THREE.BoxGeometry(.5,.5,.3),new THREE.MeshBasicMaterial({color:0x2244aa}));l.position.y=.25;
+me.add(b,h,l);scene.add(me)})();
+
+// oyuncu
+const p={x:W/2,y:20,z:W/2},vel={x:0,y:0,z:0};
+let yaw=0,pitch=0,ground=false,tp=false,sx=0,sy=0,slot=0;const keys={};
+const hit=(x,y,z)=>{for(let i=Math.floor(x-.3);i<=Math.floor(x+.3);i++)for(let j=Math.floor(y);j<=Math.floor(y+1.8);j++)for(let k=Math.floor(z-.3);k<=Math.floor(z+.3);k++)if(get(i,j,k))return true;return false};
+function spawn(){const x=W/2|0,z=W/2|0;let y=H-1;while(y>0&&!get(x,y,z))y--;p.x=x+.5;p.z=z+.5;p.y=y+1.1;vel.y=0}
+function move(a,d){p[a]+=d;if(hit(p.x,p.y,p.z)){p[a]-=d;if(a=='y'&&d<0)ground=true;vel[a]=0}}
+function update(dt){
+let mx=(keys.KeyD?1:0)-(keys.KeyA?1:0)+sx,mf=(keys.KeyW?1:0)-(keys.KeyS?1:0)+sy;
+const l=Math.hypot(mx,mf);if(l>1){mx/=l;mf/=l}
+const s=Math.sin(yaw),c=Math.cos(yaw);
+vel.x=(-s*mf+c*mx)*5;vel.z=(-c*mf-s*mx)*5;vel.y-=25*dt;
+if(keys.Space&&ground)vel.y=8;
+ground=false;move('x',vel.x*dt);move('z',vel.z*dt);move('y',vel.y*dt);
+if(p.y<-10)spawn()}
+function ray(){
+const o=[p.x,p.y+1.6,p.z],d=[-Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch)];let pr=null;
+for(let t=0;t<6;t+=.04){const c=[0,1,2].map(i=>Math.floor(o[i]+d[i]*t));
+if(c[1]>=0&&c[0]>=0&&c[2]>=0&&c[0]<W&&c[2]<W&&get(c[0],c[1],c[2]))return{h:c,p:pr};pr=c}
+return null}
+function act(place){const r=ray();if(!r)return;
+if(!place){set(r.h[0],r.h[1],r.h[2],0);dirty=true;return}
+if(!r.p)return;const[x,y,z]=r.p;
+const o=p.x-.3<x+1&&p.x+.3>x&&p.z-.3<z+1&&p.z+.3>z&&p.y<y+1&&p.y+1.8>y;
+if(o)return;set(x,y,z,slot+1);dirty=true}
+
+// arayüz
+const touch='ontouchstart' in window;
+for(let i=0;i<6;i++){const d=document.createElement('div');d.className='sl'+(i?'':' on');
+d.style.background='rgb('+COL[i+1].map(v=>v*255|0)+')';d.onclick=()=>pick(i);$('bar').appendChild(d)}
+function pick(i){slot=i;[...$('bar').children].forEach((e,j)=>e.classList.toggle('on',j==i))}
+$('play').onclick=()=>{
+gen();build();spawn();ready=true;
+$('menu').style.display='none';$('hud').style.display='block';$('cross').style.display='block';$('bar').style.display='flex';
+if(touch)$('touch').style.display='block';else ren.domElement.requestPointerLock()};
+addEventListener('keydown',e=>{keys[e.code]=true;if(e.code=='KeyV')tp=!tp;if(/^Digit[1-6]$/.test(e.code))pick(+e.code[5]-1)});
+addEventListener('keyup',e=>keys[e.code]=false);
+ren.domElement.addEventListener('click',()=>{if(ready&&!touch&&!document.pointerLockElement)ren.domElement.requestPointerLock()});
+addEventListener('mousemove',e=>{if(!document.pointerLockElement)return;yaw-=e.movementX*.0025;pitch=Math.max(-1.5,Math.min(1.5,pitch-e.movementY*.0025))});
+addEventListener('mousedown',e=>{if(document.pointerLockElement)act(e.button==2)});
+addEventListener('contextmenu',e=>e.preventDefault());
+
+// dokunmatik
+let st=null,lk=null;const SC={x:85,y:0};
+addEventListener('touchstart',e=>{if(!ready)return;
+for(const t of e.changedTouches){if(e.target.closest('.tb,.sl'))continue;
+if(t.clientX<innerWidth/2){st={id:t.identifier};const r=$('stick').getBoundingClientRect();SC.x=r.left+55;SC.y=r.top+55}
+else lk={id:t.identifier,x:t.clientX,y:t.clientY}}});
+addEventListener('touchmove',e=>{
+for(const t of e.changedTouches){
+if(st&&t.identifier==st.id){let dx=t.clientX-SC.x,dy=t.clientY-SC.y;const l=Math.hypot(dx,dy),m=50;if(l>m){dx*=m/l;dy*=m/l}
+sx=dx/m;sy=-dy/m;$('knob').style.transform='translate('+dx+'px,'+dy+'px)'}
+if(lk&&t.identifier==lk.id){yaw-=(t.clientX-lk.x)*.006;pitch=Math.max(-1.5,Math.min(1.5,pitch-(t.clientY-lk.y)*.006));lk.x=t.clientX;lk.y=t.clientY}}});
+addEventListener('touchend',e=>{
+for(const t of e.changedTouches){
+if(st&&t.identifier==st.id){st=null;sx=sy=0;$('knob').style.transform=''}
+if(lk&&t.identifier==lk.id)lk=null}});
+$('bJ').ontouchstart=()=>keys.Space=true;$('bJ').ontouchend=()=>keys.Space=false;
+$('bB').ontouchstart=()=>act(false);$('bP').ontouchstart=()=>act(true);$('bV').ontouchstart=()=>tp=!tp;
+
+// döngü
+let last=0;
+function loop(t){requestAnimationFrame(loop);if(!ready)return;
+const dt=Math.min((t-last)/1000,.05);last=t;update(dt);
+if(dirty){build();dirty=false}
+const ey=p.y+1.6;
+if(tp)cam.position.set(p.x+Math.sin(yaw)*Math.cos(pitch)*4,ey-Math.sin(pitch)*4+.5,p.z+Math.cos(yaw)*Math.cos(pitch)*4);
+else cam.position.set(p.x,ey,p.z);
+cam.rotation.set(pitch,yaw,0);
+me.visible=tp;me.position.set(p.x,p.y,p.z);me.rotation.y=yaw;
+const r=ray();sel.visible=!!r;if(r)sel.position.set(r.h[0]+.5,r.h[1]+.5,r.h[2]+.5);
+ren.render(scene,cam)}
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
